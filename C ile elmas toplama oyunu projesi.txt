@@ -1,0 +1,337 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <windows.h>
+#include <conio.h>
+
+int matris[10][10];
+int life = 3, move =0;
+int collectedDiamonds = 0;
+int playerPositionRow = 2, playerPositionCol = 4;
+
+void beginning()
+{
+    int row, col;
+
+    for (row = 0; row < 10; row++)
+    {
+        for (col = 0; col < 10; col++)
+        {
+            matris[row][col] = 0;
+        }
+    }
+    
+    matris[playerPositionRow][playerPositionCol] = 1;
+    return;
+}
+
+void table()
+{
+    int row, col;
+    
+    for (row = 0; row < 10; row++)
+    {
+        for (col = 0; col < 10; col++)
+        {
+        	if(matris[row][col] == 1){
+        		printf("P\t");
+			}
+			else{
+				printf("0\t");
+			}
+        }
+        printf("\n\n");
+    }
+    return;
+}
+
+void elmasUret()
+{
+   int e, k, l, c, m, yerSec, var, a;
+   e = 6;
+   c = 5;
+   m = 7;
+
+   do
+   {
+      k = rand() % 10;
+      l = rand() % 10;
+
+      int yerSec;
+      for (a = 1; a < 5; a++)
+      {
+         var = 0;
+         if (matris[k][l] == 0)
+         {
+            yerSec = 1 + rand() % 5;
+            switch (yerSec)
+            {
+
+            case 1:
+               matris[k][l] = 6;
+               if (matris[k][l - 1] == 0)
+               {
+                  matris[k][l - 1] = m;
+                  c--;
+                  break;
+               }
+               if (matris[k][l - 1] == 6 && matris[k][l - 1] == 7)
+               {
+                  var = 1;
+                  break;
+               }
+
+            case 2:
+               matris[k][l] = 6;
+               if (matris[k][l + 1] == 0)
+               {
+                  matris[k][l + 1] = m;
+                  c--;
+                  break;
+               }
+               if (matris[k][l + 1] == 6 && matris[k][l + 1] == 7)
+               {
+                  var = 1;
+                  break;
+               }
+
+            case 3:
+               matris[k][l] = 6;
+               if (matris[k + 1][l] == 0)
+               {
+                  matris[k + 1][l] = m;
+                  c--;
+                  break;
+               }
+               if (matris[k + 1][l] == 6 && matris[k + 1][l] == 7)
+               {
+                  var = 1;
+                  break;
+               }
+
+            case 4:
+               matris[k][l] = 6;
+               if (matris[k - 1][l] == 0)
+               {
+                  matris[k - 1][l] = m;
+                  c--;
+                  break;
+               }
+               if (matris[k - 1][l] == 6 && matris[k - 1][l] == 7)
+               {
+                  var = 1;
+                  break;
+               }
+            }
+         }
+      }
+
+   } while (c > 0);
+}
+
+
+void calculateDistance(){
+	int row, col;
+	int countDiamond = 0, distanceRow = 0, distanceCol = 0;
+    
+    for (row = 0; row < 10; row++)
+    {
+        for (col = 0; col < 10; col++)
+        {
+        	if(matris[row][col] == 6){
+        		countDiamond++;
+        		if(row > playerPositionRow){
+        			distanceRow = row - playerPositionRow;
+				}
+				else{
+					distanceRow = playerPositionRow - row;
+				}
+				
+				if(col > playerPositionCol){
+        			distanceCol = col - playerPositionCol;
+				}
+				else{
+					distanceCol = playerPositionCol - col;
+				}
+				
+				printf("---> %d. elmasa olan uzaklik: %d\n", countDiamond, (distanceRow + distanceCol));
+			}
+        }
+    }
+	return;
+}
+
+void game(){
+	while (life >= 0 && collectedDiamonds < 5){
+		calculateDistance();
+		printf("---> Hamle: %d | Can: %d | Toplanmis Elmaslar: %d\n", move, life, collectedDiamonds);
+		
+		table();
+		
+		// Elmas: 6 | Muhafız: 7
+		getch();
+    	switch(getch()) {
+        	case 80:
+        		if(playerPositionRow + 1 > 9){
+        			printf("\nOyun sahasindan cikamazsiniz! Lutfen tekrar deneyiniz..");
+				}
+				else{
+					matris[playerPositionRow][playerPositionCol] = 0;
+					playerPositionRow++;
+					move++;
+            		
+            		if(matris[playerPositionRow][playerPositionCol] == 6){
+            			collectedDiamonds++;
+            			matris[playerPositionRow][playerPositionCol] = 1;
+            			printf("\nTebrikler elmasi buldunuz..");
+					}
+					else if(matris[playerPositionRow][playerPositionCol] == 7){
+						life--;
+						printf("\nMuhafiza yakalandiginiz icin basa dondunuz. Kalan caniniz %d'dir.", life);
+						playerPositionRow--;
+						matris[playerPositionRow][playerPositionCol] = 0;
+						
+						playerPositionRow = 2;
+						playerPositionCol = 4;
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+					else{
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+				}
+            	break;
+        	case 72:
+        		if(playerPositionRow - 1 < 0){
+        			printf("\nOyun sahasindan cikamazsiniz! Lutfen tekrar deneyiniz..");
+				}
+				else{
+					matris[playerPositionRow][playerPositionCol] = 0;
+					playerPositionRow--;
+            		move++;
+            		
+            		if(matris[playerPositionRow][playerPositionCol] == 6){
+            			collectedDiamonds++;
+            			matris[playerPositionRow][playerPositionCol] = 1;
+            			printf("\nTebrikler elmasi buldunuz..");
+					}
+					else if(matris[playerPositionRow][playerPositionCol] == 7){
+						life--;
+						printf("\nMuhafiza yakalandiginiz icin basa dondunuz. Kalan caniniz %d'dir.", life);
+						playerPositionRow++;
+						matris[playerPositionRow][playerPositionCol] = 0;
+						
+						playerPositionRow = 2;
+						playerPositionCol = 4;
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+					else{
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+				}
+            	break;
+        	case 77:
+        		if(playerPositionCol + 1 > 9){
+        			printf("\nOyun sahasindan cikamazsiniz! Lutfen tekrar deneyiniz..");
+				}
+				else{
+					matris[playerPositionRow][playerPositionCol] = 0;
+					playerPositionCol++;
+            		move++;
+            		
+            		if(matris[playerPositionRow][playerPositionCol] == 6){
+            			collectedDiamonds++;
+            			matris[playerPositionRow][playerPositionCol] = 1;
+            			printf("\nTebrikler elmasi buldunuz..");
+					}
+					else if(matris[playerPositionRow][playerPositionCol] == 7){
+						life--;
+						printf("\nMuhafiza yakalandiginiz icin basa dondunuz. Kalan caniniz %d'dir.", life);
+						playerPositionCol--;
+						matris[playerPositionRow][playerPositionCol] = 0;
+						
+						playerPositionRow = 2;
+						playerPositionCol = 4;
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+					else{
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+				}
+            	break;
+        	case 75:
+        		if(playerPositionCol - 1 < 0){
+        			printf("\nOyun sahasindan cikamazsiniz! Lutfen tekrar deneyiniz..");
+				}
+				else{
+					matris[playerPositionRow][playerPositionCol] = 0;
+					playerPositionCol--;
+            		move++;
+            		
+            		if(matris[playerPositionRow][playerPositionCol] == 6){
+            			collectedDiamonds++;
+            			matris[playerPositionRow][playerPositionCol] = 1;
+            			printf("\nTebrikler elmasi buldunuz..");
+					}
+					else if(matris[playerPositionRow][playerPositionCol] == 7){
+						life--;
+						printf("\nMuhafiza yakalandiginiz icin basa dondunuz. Kalan caniniz %d'dir.", life);
+						playerPositionCol++;
+						matris[playerPositionRow][playerPositionCol] = 0;
+						
+						playerPositionRow = 2;
+						playerPositionCol = 4;
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+					else{
+						matris[playerPositionRow][playerPositionCol] = 1;
+					}
+				}
+            	break;
+            default :
+            	printf("\nYanlis tusa bastiniz! Lutfen tekrar deneyiniz..");
+            	break;
+    	}
+    	printf("\n");
+	}
+	printf("\n\t\t\t\t\t\t-----> Oyun Sona Erdi <-----\n");
+	if(life < 0){
+		printf("---> Baska caniniz kalmadi. Kaybettiniz..\n");
+		printf("---> Toplanan Elmas: %d\n", collectedDiamonds);
+	}
+	else{
+		printf("---> Tebrikler tum elmaslari toplamayi basardiniz..\n");
+	}
+	
+}
+
+int main()
+{
+    srand(time(0));
+
+    printf("\n\t\t\t\t\t---------------> HAZINE AVI <---------------\n");
+
+    beginning();
+    
+    printf("---> Elmas: E\n");
+    printf("---> Muhafiz: M\n");
+    printf("---> Oyuncu: P\n");
+    
+    elmasUret();
+    
+    /*int row, col;
+    for (row = 0; row < 10; row++)
+    {
+        for (col = 0; col < 10; col++)
+        {
+        	printf("%d\t", matris[row][col]);
+        }
+        printf("\n\n");
+    }*/
+    
+    printf("\n\t\t\t\t\t\t-----> Oyun Basladi <-----\n");
+    
+    game();
+
+    printf("\n");
+    return 0;
+}
